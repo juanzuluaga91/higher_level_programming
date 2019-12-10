@@ -8,3 +8,4 @@ if number == 0:
     print(number, 'is zero')
 if number < 0:
     print(number, 'is nevative')
+print('\n')
