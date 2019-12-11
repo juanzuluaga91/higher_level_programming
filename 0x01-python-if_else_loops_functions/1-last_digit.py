@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import random
 number = random.randint(-10000, 10000)
-number = -4205
 ld = number % 10
 if number < 0:
     ld *= -1
