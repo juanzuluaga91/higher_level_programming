@@ -1,0 +1,60 @@
+The ``5-text_indentation`` module
+=================================
+
+>>> text_indentation = __import__("5-text_indentation").text_indentation
+
+Documentation checks:
+
+>>> mod = __import__("5-text_indentation").__doc__
+	 >>> len(mod) > 1
+	 True
+
+>>> str="World famous. : \nguitar player? .\n"
+    
+Normal string:
+    >>> text_indentation(str)
+    World famous.
+    <BLANKLINE>
+    :
+    <BLANKLINE>
+    <BLANKLINE>
+    guitar player?
+    <BLANKLINE>
+    .
+    <BLANKLINE>
+    <BLANKLINE>
+
+Just delimiters:
+    >>> str=" : . ? "
+    >>> text_indentation(str)
+    :
+    <BLANKLINE>
+    .
+    <BLANKLINE>
+    ?
+    <BLANKLINE>
+
+More tha 2 args:
+    >>> text_indentation("bored", "as", "hell")
+    Traceback (most recent call last):
+    TypeError: text_indentation() takes 1 positional argument but 3 were given
+
+No args:
+    >>> text_indentation()
+    Traceback (most recent call last):
+    TypeError: text_indentation() missing 1 required positional argument: 'text'
+
+Positive integer:
+    >>> text_indentation(8798798798)
+    Traceback (most recent call last):
+    TypeError: text must be a string
+
+Negative integer:
+    >>> text_indentation(-8798798798)
+    Traceback (most recent call last):
+    TypeError: text must be a string
+
+None:
+    >>> text_indentation(None)
+    Traceback (most recent call last):
+    TypeError: text must be a string

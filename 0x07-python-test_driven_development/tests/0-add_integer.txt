@@ -1,0 +1,63 @@
+The ``0-add_integer`` module
+============================
+
+>>> add_integer = __import__("0-add_integer").add_integer
+
+Documentation checks:
+
+>>> mod = __import__("0-add_integer").__doc__
+	 >>> len(mod) > 1
+	 True
+
+Test one int with second arg (b=98) by default:
+
+    >>> add_integer(2)
+    100
+
+Test 0 as a first argument:
+
+    >>> add_integer(0)
+    98
+
+Test two int as argument:
+
+    >>> add_integer(2, 8)
+    10
+
+Test positive and negative integers:
+
+    >>> add_integer(888,-999)
+    -111
+
+Test negative and positive integers:
+
+    >>> add_integer(-888,999)
+    111
+
+Errors:
+
+Add nan:
+
+    >>> add_integer(0, float('nan'))
+    Traceback (most recent call last):
+    ...
+    ValueError: cannot convert float NaN to integer
+
+Test string as second argument:
+
+    >>> add_integer(4, "hbtn")
+    Traceback (most recent call last):
+    TypeError: b must be an integer
+
+Test string as first argument:
+
+    >>> add_integer("hbtn", 2)
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+
+Test string as first and second argument:
+
+    >>> add_integer("hbtn", "school")
+    Traceback (most recent call last):
+    TypeError: a must be an integer
+

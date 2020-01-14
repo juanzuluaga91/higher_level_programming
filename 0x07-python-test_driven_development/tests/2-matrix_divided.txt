@@ -1,0 +1,38 @@
+The ``2-matrix_divided`` module
+===============================
+
+Import module:
+    >>> matrix_divided = __import__('2-matrix_divided').matrix_divided
+
+Documentation checks:
+	 >>> mod = __import__("2-matrix_divided").__doc__
+	 >>> len(mod) > 1
+	 True
+
+Division by zero:
+    >>> matrix_divided([[5, 9, 45], [7, 8, 4]], 0)
+    Traceback (most recent call last):
+    ...
+    ZeroDivisionError: division by zero
+
+Division by a str div:
+    >>> matrix_divided([[3, 5, 8]], "str")
+    Traceback (most recent call last):
+    ...
+    TypeError: div must be a number
+
+1st arg none:
+    >>> matrix_divided(none, 1)
+    Traceback (most recent call last):
+    ...
+    NameError: name 'none' is not defined
+
+Division by negative:
+    >>> matrix_divided([[2, 4, 8], [1, 2, 3]], -3)
+    [[-0.67, -1.33, -2.67], [-0.33, -0.67, -1.0]]
+
+Test matrix with non number
+    >>> matrix_divided([[2, 4, 8], [1, "str", 3]], 2)
+    Traceback (most recent call last):
+    ...
+    TypeError: matrix must be a matrix (list of lists) of integers/floats
