@@ -61,8 +61,6 @@ class Base:
                 l_X = cls.from_json_string(f.read())
             for i, e in enumerate(l_X):
                 l_X[i] = cls.create(**l_X[i])
-        except:
-            pass
         return l_X
 
     @classmethod
@@ -98,8 +96,6 @@ class Base:
                                       "x": int(args[2]), "y": int(args[3])}
                     obj = cls.create(**dictionary)
                     l_X.append(obj)
-        except:
-            pass
         return l_X
 
     @staticmethod
