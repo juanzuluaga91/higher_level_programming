@@ -1,231 +1,128 @@
 #!/usr/bin/python3
-"""
-This module contains the "Base" class
-"""
-
+'''Module for Base class.'''
+from json import dumps, loads
 import csv
-import json
-import turtle
 
 
 class Base:
-    """ Base Class """
+    '''A representation of the base of our OOP hierarchy.'''
+
     __nb_objects = 0
 
     def __init__(self, id=None):
-        if id is None:
-            Base.__nb_objects += 1
-            self.id = self.__nb_objects
-        else:
+        '''Constructor.'''
+        if id is not None:
             self.id = id
+        else:
+            Base.__nb_objects += 1
+            self.id = Base.__nb_objects
 
     @staticmethod
     def to_json_string(list_dictionaries):
-        if list_dictionaries is None:
-            list_dictionaries = []
-        return json.dumps(list_dictionaries)
+        '''Jsonifies a dictionary so it's quite rightly and longer.'''
+        if list_dictionaries is None or not list_dictionaries:
+            return "[]"
+        else:
+            return dumps(list_dictionaries)
 
     @staticmethod
     def from_json_string(json_string):
-        """returns the list of the JSON string representation json_string"""
-        if json_string is None or len(json_string) == 0:
+        '''Unjsonifies a dictionary.'''
+        if json_string is None or not json_string:
             return []
-        return json.loads(json_string)
+        return loads(json_string)
 
     @classmethod
     def save_to_file(cls, list_objs):
-        """writes the JSON string representation of list_objs to a file"""
-        f_name = cls.__name__ + ".json"
-        l_O = []
+        '''Saves jsonified object to file.'''
         if list_objs is not None:
-            for i in list_objs:
-                l_O.append(cls.to_dictionary(i))
-        with open(f_name, 'w') as f:
-            f.write(cls.to_json_string(l_O))
-
-    @classmethod
-    def create(cls, **dictionary):
-        if cls.__name__ is "Rectangle":
-            dummy = cls(1, 1)
-        elif cls.__name__ is "Square":
-            dummy = cls(1)
-        dummy.update(**dictionary)
-        return dummy
+            list_objs = [o.to_dictionary() for o in list_objs]
+        with open("{}.json".format(cls.__name__), "w", encoding="utf-8") as f:
+            f.write(cls.to_json_string(list_objs))
 
     @classmethod
     def load_from_file(cls):
-        f_name = cls.__name__ + ".json"
-        l_X = []
-        try:
-            with open(f_name, 'r') as f:
-                l_X = cls.from_json_string(f.read())
-            for i, e in enumerate(l_X):
-                l_X[i] = cls.create(**l_X[i])
-        except:
-            pass
-        return l_X
+        '''Loads string from file and unjsonifies.'''
+        from os import path
+        file = "{}.json".format(cls.__name__)
+        if not path.isfile(file):
+            return []
+        with open(file, "r", encoding="utf-8") as f:
+            return [cls.create(**d) for d in cls.from_json_string(f.read())]
+
+    @classmethod
+    def create(cls, **dictionary):
+        '''Loads instance from dictionary.'''
+        from models.rectangle import Rectangle
+        from models.square import Square
+        if cls is Rectangle:
+            new = Rectangle(1, 1)
+        elif cls is Square:
+            new = Square(1)
+        else:
+            new = None
+        new.update(**dictionary)
+        return new
 
     @classmethod
     def save_to_file_csv(cls, list_objs):
-        f_name = cls.__name__ + ".csv"
-        with open(f_name, 'w', newline='') as csvfile:
-            csv_writer = csv.writer(csvfile)
-            if cls.__name__ is "Rectangle":
-                for obj in list_objs:
-                    csv_writer.writerow([obj.id, obj.width, obj.height,
-                                         obj.x, obj.y])
-            elif cls.__name__ is "Square":
-                for obj in list_objs:
-                    csv_writer.writerow([obj.id, obj.size, obj.x, obj.y])
+        '''Saves object to csv file.'''
+        from models.rectangle import Rectangle
+        from models.square import Square
+        if list_objs is not None:
+            if cls is Rectangle:
+                list_objs = [[o.id, o.width, o.height, o.x, o.y]
+                             for o in list_objs]
+            else:
+                list_objs = [[o.id, o.size, o.x, o.y]
+                             for o in list_objs]
+        with open('{}.csv'.format(cls.__name__), 'w', newline='',
+                  encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerows(list_objs)
 
     @classmethod
     def load_from_file_csv(cls):
-        """deserializes a list of Rectangles/Squares in csv"""
-        f_name = cls.__name__ + ".csv"
-        l_X = []
-        try:
-            with open(f_name, 'r') as csvfile:
-                csv_reader = csv.reader(csvfile)
-                for args in csv_reader:
-                    if cls.__name__ is "Rectangle":
-                        dictionary = {"id": int(args[0]),
-                                      "width": int(args[1]),
-                                      "height": int(args[2]),
-                                      "x": int(args[3]),
-                                      "y": int(args[4])}
-                    elif cls.__name__ is "Square":
-                        dictionary = {"id": int(args[0]), "size": int(args[1]),
-                                      "x": int(args[2]), "y": int(args[3])}
-                    obj = cls.create(**dictionary)
-                    l_X.append(obj)
-        except:
-            pass
-        return l_X
+        '''Loads object to csv file.'''
+        from models.rectangle import Rectangle
+        from models.square import Square
+        ret = []
+        with open('{}.csv'.format(cls.__name__), 'r', newline='',
+                  encoding='utf-8') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                row = [int(r) for r in row]
+                if cls is Rectangle:
+                    d = {"id": row[0], "width": row[1], "height": row[2],
+                         "x": row[3], "y": row[4]}
+                else:
+                    d = {"id": row[0], "size": row[1],
+                         "x": row[2], "y": row[3]}
+                ret.append(cls.create(**d))
+        return ret
 
     @staticmethod
     def draw(list_rectangles, list_squares):
-        """opens a window and draws all the Rectangles and Squares"""
-        screen_width = 620
-        padding = 10
-        row_width = padding
-        row_height = 0
-        screen_height = padding
-        color_list = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo',
-                      'violet']
-        color_size = len(color_list)
-        color_index = 0
-        for rect in list_rectangles:
-            potential_width = row_width + rect.width + rect.x + padding
-            if (row_width == padding or potential_width < screen_width):
-                row_width += rect.width + rect.x + padding
-                if (row_height < rect.height + rect.y):
-                    row_height = rect.height + rect.y
-            else:
-                screen_height += row_height + padding
-                row_width = rect.width + rect.x + padding * 2
-                row_height = rect.height + rect.y
+        import turtle
+        import time
+        from random import randrange
+        turtle.Screen().colormode(255)
+        for i in list_rectangles + list_squares:
+            t = turtle.Turtle()
+            t.color((randrange(255), randrange(255), randrange(255)))
+            t.pensize(1)
+            t.penup()
+            t.pendown()
+            t.setpos((i.x + t.pos()[0], i.y - t.pos()[1]))
+            t.pensize(10)
+            t.forward(i.width)
+            t.left(90)
+            t.forward(i.height)
+            t.left(90)
+            t.forward(i.width)
+            t.left(90)
+            t.forward(i.height)
+            t.left(90)
+            t.end_fill()
 
-        for square in list_squares:
-            potential_width = row_width + square.size + square.x + padding
-            if (row_width == padding or potential_width < screen_width):
-                row_width += square.size + square.x + padding
-                if (row_height < square.size + square.y):
-                    row_height = square.size + square.y
-            else:
-                screen_height += row_height + padding
-                row_width = square.size + square.x + padding * 2
-                row_height = square.size + square.y
-        turtle.screensize(canvwidth=screen_width, canvheight=screen_height)
-        turtle.pu()
-        turtle.left(180)
-        turtle.forward(screen_width/2 - padding)
-        turtle.right(90)
-        turtle.forward(screen_height/2 - padding)
-        turtle.right(90)
-        row_width = padding
-        row_height = 0
-        for rect in list_rectangles:
-            potential_width = row_width + rect.width + rect.x + padding
-            if (row_width == padding or potential_width < screen_width):
-                row_width += rect.width + rect.x + padding
-                if (row_height < rect.height + rect.y):
-                    row_height = rect.height + rect.y
-            else:
-                turtle.pu()
-                turtle.left(180)
-                turtle.forward(row_width - padding)
-                turtle.left(90)
-                turtle.forward(row_height + padding)
-                turtle.left(90)
-                row_width = rect.width + rect.x + padding * 2
-                row_height = rect.height + rect.y
-            turtle.pd()
-            turtle.pencolor(color_list[color_index % color_size])
-            for _ in range(4):
-                turtle.forward(5)
-                turtle.back(5)
-                turtle.right(90)
-            turtle.pu()
-            turtle.forward(rect.x)
-            turtle.right(90)
-            turtle.forward(rect.y)
-            turtle.left(90)
-            turtle.pd()
-            turtle.pencolor('black')
-            turtle.fillcolor(color_list[color_index % color_size])
-            turtle.begin_fill()
-            for _ in range(2):
-                turtle.forward(rect.width)
-                turtle.right(90)
-                turtle.forward(rect.height)
-                turtle.right(90)
-            turtle.end_fill()
-            color_index += 1
-            turtle.pu()
-            turtle.forward(rect.width + padding)
-            turtle.left(90)
-            turtle.forward(rect.y)
-            turtle.right(90)
-
-        for square in list_squares:
-            potential_width = row_width + square.size + square.x + padding
-            if (row_width == padding or potential_width < screen_width):
-                row_width += square.size + square.x + padding
-                if (row_height < square.size):
-                    row_height = square.size + square.y
-            else:
-                turtle.pu()
-                turtle.left(180)
-                turtle.forward(row_width - padding)
-                turtle.left(90)
-                turtle.forward(row_height + padding)
-                turtle.left(90)
-                row_width = square.size + square.x + padding * 2
-                row_height = square.size + square.y
-            turtle.pd()
-            turtle.pencolor(color_list[color_index % color_size])
-            for _ in range(4):
-                turtle.forward(5)
-                turtle.back(5)
-                turtle.right(90)
-            turtle.pu()
-            turtle.forward(square.x)
-            turtle.right(90)
-            turtle.forward(square.y)
-            turtle.left(90)
-            turtle.pd()
-            turtle.pencolor('black')
-            turtle.fillcolor(color_list[color_index % color_size])
-            turtle.begin_fill()
-            for _ in range(4):
-                turtle.forward(square.size)
-                turtle.right(90)
-            turtle.end_fill()
-            color_index += 1
-            turtle.pu()
-            turtle.forward(square.size + padding)
-            turtle.left(90)
-            turtle.forward(square.y)
-            turtle.right(90)
-
-        turtle.getscreen()._root.mainloop()
+        time.sleep(5)
