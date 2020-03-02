@@ -28,3 +28,7 @@
 0x0B-python-input_output/append_after_100.txt
 0x0B-python-input_output/__pycache__/0-read_file.cpython-38.pyc
 0x0C-python-almost_a_circle/.vscode/settings.json
+0x0C-python-almost_a_circle/tests/models/__pycache__/__init__.cpython-38.pyc
+0x0C-python-almost_a_circle/tests/models/__pycache__/test_base.cpython-38.pyc
+0x0C-python-almost_a_circle/tests/models/__pycache__/test_rectangle.cpython-38.pyc
+0x0C-python-almost_a_circle/tests/models/__pycache__/test_square.cpython-38.pyc
