@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     cur = db.cursor()
     cmd_q = "SELECT * FROM states WHERE name=%s"
-    cur.execute(cmd_q,(state_name,))
+    cur.execute(cmd_q, (state_name,))
     for row in cur.fetchall():
         print(row)
     cur.close()
