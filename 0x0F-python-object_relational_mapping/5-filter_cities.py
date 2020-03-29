@@ -10,16 +10,11 @@ if __name__ == '__main__':
                          passwd=argv[2],
                          db=argv[3])
 
-    cur = db.cursor()
-    cmd_q = "SELECT cities.name FROM cities \
-             JOIN states ON states.id = cities.state_id \
-             WHERE states.name =%s"
-    cur.execute(cmd_q, (state_name,))
-    c = int(cur.rowcount)
-    for i, row in enumerate(cur.fetchall()):
-        if i < c - 1:
-            print(row[0], end=", ")
-        else:
-            print(row[0])
-    cur.close()
+    cursor = db.cursor()
+    cursor.execute("SELECT cities.name FROM cities \
+    JOIN states ON cities.state_id = states.id WHERE states.name LIKE %s \
+    ORDER BY cities.id", (argv[4],))
+    rows = cursor.fetchall()
+    print(", ".join(city[0] for city in rows))
+    cursor.close()
     db.close()
