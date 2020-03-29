@@ -1,30 +1,22 @@
 #!/usr/bin/python3
-# Lists all states from a database
-    import sqlalchemy
-    from sqlalchemy.orm import sessionmaker
-    from model_state import Base, State
-    from sys import argv, exit
+""" 11-model_state_insert """
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from model_state import Base, State
+from sys import argv
+
 
 
 if __name__ == "__main__":
-
-    if len(argv) != 4:
-        print("Usage: ./10.py <usrname> <passwd> <database>")
-        exit(1)
-
-    usr, pwd, dbe = argv[1], argv[2], argv[3]
-
-    eng = "mysql://" + usr + ":" + pwd + "@localhost:3306/" + dbe
-    try:
-        engine = sqlalchemy.create_engine(eng)
-    except Exception as err:
-        print(err)
-        exit(1)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    new = State(name='Lousiana')
-    session.add(new)
-    session.commit()
-    print(new.id)
-    session.close()
+    if len(argv) == 4:
+        url = 'mysql+mysqldb://{}:{}@localhost:3306/{}'.format(
+            argv[1], argv[2], argv[3], pool_pre_ping=True)
+        engine = create_engine(url)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        new_state = State(name='Louisiana')
+        session.add(new_state)
+        session.commit()
+        query = session.query(State).filter(State.name == 'Louisiana')
+        for ins in query:
+            print("{}".format(ins.id))
