@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 # Lists all states from a database
-
-if __name__ == "__main__":
     import sqlalchemy
     from sqlalchemy.orm import sessionmaker
     from model_state import Base, State
     from sys import argv, exit
+
+
+if __name__ == "__main__":
 
     if len(argv) != 4:
         print("Usage: ./10.py <usrname> <passwd> <database>")
