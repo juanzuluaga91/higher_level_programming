@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""lists all State objects from the DB hbtn_0e_6_usa"""
+"""
+list the first State object from a database
+"""
+
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
