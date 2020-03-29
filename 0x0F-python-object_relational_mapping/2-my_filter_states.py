@@ -1,21 +1,21 @@
 #!/usr/bin/python3
-"""Write a script that lists all states"""
+"""
+python script that lists all states with a given name
+"""
+
 import MySQLdb
 from sys import argv
 
-if __name__ == '__main__':
-    state_name = argv[4]
-    db = MySQLdb.connect(host="localhost",
-                         user=argv[1],
-                         passwd=argv[2],
-                         db=argv[3])
-
-    cur = db.cursor()
-    cur.execute("SELECT * FROM states WHERE name='{:s}'ORDER BY \
-        id ASC".format(state_name))
-    rows = cur.fetchall()
+if __name__ == "__main__":
+    db = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
+                         passwd=argv[2], db=argv[3], charset="utf8")
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM states WHERE name LIKE '{:s}' ORDER BY \
+    id ASC".format(argv[4]))
+    rows = cursor.fetchall()
     for row in rows:
-        if row == state_name:
-            print(row)
-    cur.close()
+        if row[1] == argv[4]:
+            if row[1][0] == 'N':
+                print(row)
+    cursor.close()
     db.close()
