@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Grabs the header X-Request-Id from a url passed as an argument
+X-Request-Id from a url passed as an argument
 """
 import urllib.request
 import sys
