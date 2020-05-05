@@ -1,6 +1,6 @@
 #!/usr/bin/node
 const times = Number(process.argv[2]);
-const x = 'x';
+const x = 'X';
 if (!times) {
   console.log('Missing size');
 } else {
