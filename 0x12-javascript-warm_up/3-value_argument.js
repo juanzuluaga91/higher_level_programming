@@ -2,7 +2,7 @@
 const argLen = process.argv;
 
 if (argLen[2] === undefined) {
-    console.log('No argument');
+  console.log('No argument');
 } else {
-    console.log(`${argLen[2]}`);
+  console.log(`${argLen[2]}`);
 }
