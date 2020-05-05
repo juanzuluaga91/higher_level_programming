@@ -2,7 +2,7 @@
 const agrs = process.argv;
 const argLen = process.argv.length;
 if (Number(argLen) <= 3) {
-  console.log(1);
+  console.log(0);
 } else {
   agrs.shift()
   agrs.shift()
